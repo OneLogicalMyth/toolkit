@@ -1,5 +1,5 @@
 #!/bin/bash
-# Drops all IPv4 traffic other than intra-kernel & that specified
+# Accepts traffic on all ports for egress testing
 #
 # Check for root access
 if [[ $EUID -ne 0 ]]; then
@@ -8,28 +8,33 @@ if [[ $EUID -ne 0 ]]; then
    echo ""
    exit 1
 fi
+# Start Nginx Web Server for testing
+# (Other web servers are available)
+systemctl start nginx
 # Flush iptables rules
 iptables -F
-# Set default iptables rules to DROP
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-iptables -P OUTPUT DROP
-# Accept traffic between kernel processes
+# Set default iptables rules to ACCEPT
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+# Accept loopback & ICMP traffic
+iptables -t nat -A PREROUTING -i lo -j RETURN
+iptables -t nat -A PREROUTING -p icmp -j RETURN
 iptables -A INPUT -i lo -j ACCEPT
-iptables -A OUTPUT -o lo -j ACCEPT
-# Accept inbound traffic relating to established communications
-iptables -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
-# Following line defines targets to allow traffic to
-# Add one host or network address per-line
-iptables -A OUTPUT -d w.x.y.z/32 -j ACCEPT
-# Bring up ethernet interface
-ifconfig eth1 up
-# Allow vlan tagging if required
-modprobe 8021q
-# Add vlan subinterface if required
-vconfig add eth1 <vlan-number>
-# Add address to subinterface
-ifconfig eth1.100 192.168.1.10/24 up
-# Add routing info
-route add default gw <address>
+iptables -A INPUT -p icmp -j ACCEPT
+# Accept established communications
+iptables -t nat -A PREROUTING -m state --state RELATED,ESTABLISHED -j RETURN
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+# Permit traffic to OpenSSH server on tcp/22
+# Permit traffic to the Nginx server on tcp/80
+# If you need to run actual services on other ports (ssh, smb, etc)
+# Then it will be necessary to add lines to the following section for each
+# port required
+iptables -t nat -A PREROUTING -p tcp -m tcp --dport 22 -j RETURN
+iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+iptables -t nat -A PREROUTING -p tcp -m tcp --dport 80 -j RETURN
+iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+# Add dynamic NAT to forward all other traffic to port 80
+# Irrespective of source or destination port
+iptables -t nat -A PREROUTING -p tcp -j DNAT --to-destination :80
 exit 0
