@@ -1,0 +1,33 @@
+function _adroll__(){
+
+    var rnd = Math.random(); var r = rnd*10000000000000000;
+    var randomNo = new String(rnd); var randomNoString = randomNo.substring(2, 11);
+
+    var content = unescape('%3cdiv%20class%3d%22adroll-block%22%3e%0a%20%20%20%20%0a%3cscript%20type%3d%22text/javascript%22%20src%3d%22https%3a//adfarm.mediaplex.com/ad/js/29817-236799-48066-14%3fmpt%3d%5btimestamp%5d%26mpvc%3d%5badrclickurl%5d%22%3e%0a%3c/script%3e%0a%0a%3cscript%20type%3d%22text/javascript%22%3e%0a%20%20%20%20__adroll.reset%28%29%3b%0a%3c/script%3e%0a%0a%0a%3cscript%3e%28function%28%29%20%7bdocument.write%28%27%3csc%27%2b%27ript%20type%3d%22text/javascript%22%20src%3d%22%27%20%2b%20%28__adroll._secure%28%29%20%3f%20%22https%3a//c.betrad.com%22%20%3a%20%22http%3a//c.betrad.com%22%29%20%2b%20%27/durly.js%3f%3bad_w%3d%5bADROLL_WIDTH%5d%3bad_h%3d%5bADROLL_HEIGHT%5d%3becaid%3d%5bECAID%5d%3bcoid%3d412%3bnid%3d890%3b%22%3e%3c/scr%27%2b%27ipt%3e%27%29%3b%7d%28%29%29%3b%3c/script%3e%0a%3c/div%3e%0a');
+    content = content.replace(/\[timestamp\]/gi, r);
+    content = content.replace(/\[randomNo\]/gi, randomNoString);
+    content = content.replace(/\[ADROLL_WIDTH\]/gi, adroll_width);
+    content = content.replace(/\[ADROLL_HEIGHT\]/gi, adroll_height);
+    content = content.replace(/\[ECAID\]/gi, "U2LZSJSBDBD6DMVHARK5PM_JRRWU6ZXUFCAPDRBRCWNDH");
+    content = content.replace(/\[CAMPAIGN_EID\]/gi, "2YNRQHBQXZCNDCQSO5NY4D");
+    content = content.replace(/\[AD_EID\]/gi, "JRRWU6ZXUFCAPDRBRCWNDH");
+    content = content.replace(/\[ADGROUP_EID\]/gi, "U2LZSJSBDBD6DMVHARK5PM");
+    content = content.replace(/\[PLACEMENT\]/gi, "MFKWMPY4MJH2ZCUANDHQSM");
+
+    var _dynurl = __adroll.format_macros("http://d.adroll.com/r/ISRFVJ4CYZEJLCRYPCOWW4/MFKWMPY4MJH2ZCUANDHQSM/931ca820eda7cf7355087729e5822084.dy", true, true, true);
+    content = content.replace(/\[ADRClickUrl\]/gi, escape(_dynurl));
+    content = content.replace(/\[ADRClickUrl_UNESC\]/gi, _dynurl);
+    content = content.replace(/\[ADRClickUrl_ESC\]/gi, escape(_dynurl));
+
+    if (__adroll._secure()) var eurl = "http://d.adroll.com/r/ISRFVJ4CYZEJLCRYPCOWW4/MFKWMPY4MJH2ZCUANDHQSM/931ca820eda7cf7355087729e5822084.ev";
+    else var eurl = "http://d.adroll.com/r/ISRFVJ4CYZEJLCRYPCOWW4/MFKWMPY4MJH2ZCUANDHQSM/931ca820eda7cf7355087729e5822084.ev";
+    var engageurl = __adroll.format_macros(eurl, false, true, false);
+    content = content.replace(/\[ADREngageUrl\]/gi, escape(engageurl));
+    content = content.replace(/\[ADREngageUrl_UNESC\]/gi, engageurl);
+    content = content.replace(/\[ADREngageUrl_ESC\]/gi, escape(engageurl));
+
+        content = content + __adroll.generate_link(0, "https://www.adroll.com/about/partners?page=index", "Site", "300");
+        __adroll.set_cookie("ISRFVJ4CYZEJLCRYPCOWW4", "MFKWMPY4MJH2ZCUANDHQSM", "U2LZSJSBDBD6DMVHARK5PM", "JRRWU6ZXUFCAPDRBRCWNDH");
+    document.write(content);
+}
+_adroll__();

