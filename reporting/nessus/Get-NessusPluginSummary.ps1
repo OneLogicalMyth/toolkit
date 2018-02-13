@@ -1,5 +1,6 @@
+
 Function Get-NessusPluginSummary {
-param($NessusFile=$null,[int]$PluginName=$null,[int]$PluginID=$null,[int]$MinimumSeverity=1)
+param($NessusFile=$null,[string]$PluginName=$null,[int]$PluginID=$null,[int]$MinimumSeverity=1)
 
     if(-not $NessusFile)
     {
