@@ -1,46 +1,41 @@
 Function Get-NessusPluginSummary {
-param($NessusFile,[int[]]$PluginFilter)
+param($NessusFile=$null,[int]$PluginName=$null,[int]$PluginID=$null,[int]$MinimumSeverity=1)
 
-    begin
+    if(-not $NessusFile)
     {
-        if($PluginFilter -eq 0)
-        {
-            Write-Warning 'Please give a list of plugin IDs to summarise'
-            return
-        }
-
-        $XML = New-Object XML
-        $XML.Load((Convert-Path $NessusFile))
+        Write-Warning 'Please provide a Nessus scan file path.'
+        return
     }
-
-    process
-    {
-        foreach($PluginID in $PluginFilter)
-        {
-            $ReportHosts = $XML.SelectNodes('//ReportHost')
-            
-            foreach($ReportHost in $ReportHosts)
-            {
-                $Out = '' | Select-Object ("Host,$($PluginFilter -join ',')" -split ',')
-                $Out.Host = $ReportHost.name
-                $HasResult = $false
-
-                foreach($id in $PluginFilter)
-                {
-                    if($ReportHost.SelectSingleNode("ReportItem[@pluginID=`"$id`"]").pluginID -eq $id)
-                    {
-                        $Out.$id = 'X'
-                        $HasResult = $true
-                    }else{
-                        $Out.$id = $null
-                    }
-                }
-                if($HasResult)
-                {
-                    $Out
-                }                
-            }
-        }
-    }
+        
     
+    # Get items that are not informational by default
+    [xml]$Nessus = Get-Content $NessusFile
+    $ReportItems = $Nessus.SelectNodes('//ReportItem') | Where-Object { $_.severity -ge $MinimumSeverity }
+
+    # If plugin name/id provided filter based on that
+    if($PluginName)
+    {
+        $ReportItems = $ReportItems | Where-Object { $_.pluginName -like $PluginName }
+    }
+    if($PluginID)
+    {
+        $ReportItems = $ReportItems | Where-Object { $_.pluginID -like $PluginID }
+    }
+
+    # output results
+    Foreach($Item in $ReportItems)
+    {
+
+        $Out = '' | Select-Object Host, PluginID, PluginName, Protocol, Port, ServiceName
+        $Out.Host = $Item.ParentNode.name
+        $Out.PluginID = $Item.pluginID
+        $Out.PluginName = $Item.pluginName
+        $Out.Protocol = $Item.protocol
+        $Out.Port = $Item.port
+        $Out.ServiceName = $Item.svc_name
+        $Out
+
+    }
+
+
 }
