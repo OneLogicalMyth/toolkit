@@ -129,6 +129,13 @@ param($NessusFile,$ConsolidateCVEAfter=99999,[switch]$IncludeMSBulletins)
                 }else{
                     $Out.'CVE Reference' = $CVEs -join ','
                 }
+                
+                # remove the really long version info for MS SQL, the version number relates to this
+                if($Out.'Software Name' -eq 'Microsoft SQL Server')
+                {
+                    $null = $Out.'Installed Version' -match '\d+.\d+.\d+.\d+'
+                    $Out.'Installed Version' = $Matches.Values[0]
+                }
 
                 $Out
             } | Sort-Object 'Software Name', 'Installed Version', Host
