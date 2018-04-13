@@ -62,6 +62,7 @@ param($NessusFile,$ConsolidateCVEAfter=99999,[switch]$IncludeMSBulletins)
             @{Match='7-Zip*';Name='7-Zip'}
             @{Match='HP Version Control Agent (VCA)*';Name='HP Version Control Agent (VCA)'}
             @{Match='Microsoft SQL Server*';Name='Microsoft SQL Server'}
+            @{Match='*.NET Framework*';Name='Microsoft .NET Framework'}
         )
 
         $CommonRemovals = @(
@@ -82,7 +83,7 @@ param($NessusFile,$ConsolidateCVEAfter=99999,[switch]$IncludeMSBulletins)
             $Interim = foreach($Finding in $NessusSoft)
             {
                 # regex split on install version and then only ouput if the line starts with a digit (version number)
-                $Software = $Finding.'plugin_output' -split "installed\sversion.*?:\s(.*?)`n|installed\sversion.*?:\s(.*?)`n`n" | Where-Object { $_ -match "^\d" }
+                $Software = $Finding.'plugin_output' -split "Remote\sversion.*?:\s(.*?)`n|installed\sversion.*?:\s(.*?)`n|installed\sversion.*?:\s(.*?)`n`n" | Where-Object { $_ -match "^\d" }
                 foreach($SofItem in $Software)
                 {
 
