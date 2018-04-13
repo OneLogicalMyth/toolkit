@@ -59,6 +59,8 @@ param($NessusFile,$ConsolidateCVEAfter=99999,[switch]$IncludeMSBulletins)
             @{Match='HP System Management Homepage*';Name='HP System Management Homepage'}
             @{Match='PHP*';Name='PHP'}
             @{Match='Veritas Backup Exec Remote Agent*';Name='Veritas Backup Exec Remote Agent'}
+            @{Match='7-Zip*';Name='7-Zip'}
+            @{Match='HP Version Control Agent (VCA)*';Name='HP Version Control Agent (VCA)'}
         )
 
         $CommonRemovals = @(
