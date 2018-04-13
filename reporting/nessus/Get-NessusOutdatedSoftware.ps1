@@ -134,7 +134,7 @@ param($NessusFile,$ConsolidateCVEAfter=99999,[switch]$IncludeMSBulletins)
                 if($Out.'Software Name' -eq 'Microsoft SQL Server')
                 {
                     $null = $Out.'Installed Version' -match '\d+.\d+.\d+.\d+'
-                    $Out.'Installed Version' = $Matches.Values[0]
+                    $Out.'Installed Version' = $Matches.Values[0] -Join ''
                 }
 
                 $Out
