@@ -55,7 +55,10 @@ param($NessusFile,$ConsolidateCVEAfter=99999,[switch]$IncludeMSBulletins)
             @{Match='Apache*';Name='Apache HTTP Server'}
             @{Match='CodeMeter*';Name='CodeMeter'}
             @{Match='FileZilla Client*';Name='FileZilla Client'}
-            @{Match='VMware vCenter Server*';Name='VMware vCenter Server'}
+            @{Match='VMware vCenter*';Name='VMware vCenter Server'}
+            @{Match='HP System Management Homepage*';Name='HP System Management Homepage'}
+            @{Match='PHP*';Name='PHP'}
+            @{Match='Veritas Backup Exec Remote Agent*';Name='Veritas Backup Exec Remote Agent'}
         )
 
         $CommonRemovals = @(
