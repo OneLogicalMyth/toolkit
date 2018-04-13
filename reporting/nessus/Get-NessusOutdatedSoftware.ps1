@@ -68,8 +68,8 @@ param($NessusFile,$ConsolidateCVEAfter=99999,[switch]$IncludeMSBulletins)
         	'Remote Code Execution'
         	'Code Execution'
         	'Multiple Vulnerabilities'
-        	'Buffer Overflow'
-        	'Multiple Buffer Overflows'
+            'Multiple Buffer Overflows'
+            'Buffer Overflow'
         	'Insecure Transport'
         	','
         )
