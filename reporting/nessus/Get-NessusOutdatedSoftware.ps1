@@ -63,6 +63,8 @@ param($NessusFile,$ConsolidateCVEAfter=99999,[switch]$IncludeMSBulletins)
             @{Match='HP Version Control Agent (VCA)*';Name='HP Version Control Agent (VCA)'}
             @{Match='Microsoft SQL Server*';Name='Microsoft SQL Server'}
             @{Match='*.NET Framework*';Name='Microsoft .NET Framework'}
+            @{Match='McAfee ePolicy Orchestrator Agent*';Name='McAfee ePolicy Orchestrator Agent'}
+            @{Match='IBM Domino*';Name='IBM Domino'}            
         )
 
         $CommonRemovals = @(
@@ -72,6 +74,7 @@ param($NessusFile,$ConsolidateCVEAfter=99999,[switch]$IncludeMSBulletins)
             'Multiple Buffer Overflows'
             'Buffer Overflow'
         	'Insecure Transport'
+            'Unsupported Version Detection'
         	','
         )
     }
