@@ -52,6 +52,7 @@ param($NessusFile,$ConsolidateCVEAfter=99999,[switch]$IncludeMSBulletins)
             @{Match='*Microsoft Office*';Name='Microsoft Office'}
             @{Match='Oracle VM VirtualBox*';Name='Oracle VM VirtualBox'}
             @{Match='*Java JRE*';Name='Java JRE'}
+            @{Match='Apache Tomcat*';Name='Apache Tomcat'}
             @{Match='Apache*';Name='Apache HTTP Server'}
             @{Match='CodeMeter*';Name='CodeMeter'}
             @{Match='FileZilla Client*';Name='FileZilla Client'}
@@ -64,7 +65,8 @@ param($NessusFile,$ConsolidateCVEAfter=99999,[switch]$IncludeMSBulletins)
             @{Match='Microsoft SQL Server*';Name='Microsoft SQL Server'}
             @{Match='*.NET Framework*';Name='Microsoft .NET Framework'}
             @{Match='McAfee ePolicy Orchestrator Agent*';Name='McAfee ePolicy Orchestrator Agent'}
-            @{Match='IBM Domino*';Name='IBM Domino'}            
+            @{Match='IBM Domino*';Name='IBM Domino'}
+            @{Match='OpenSSL*';Name='OpenSSL'}          
         )
 
         $CommonRemovals = @(
