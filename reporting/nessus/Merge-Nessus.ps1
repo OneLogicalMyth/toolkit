@@ -46,7 +46,15 @@ param([string]$InputFolder=".\",[string]$OutputFile='__Merged_Nessus_Report__')
                         $NewHost.SetAttribute('name',$Device.name)
                         $Report.AppendChild($NewHost) | Out-Null
                     }else{
-                        Write-Host 'ToDo'
+                        Foreach($item in $ReportRoot.SelectNodes('//ReportItem'))
+                        {
+                            if(-not $IsExistingHost.SelectSingleNode("ReportItem[@port='$($item.port)'][@pluginID='$($item.pluginID)']"))
+                            {
+                                Write-Host "adding finding: $($item.port):$($item.pluginID)"
+                                $null = $IsExistingHost.AppendChild($item)
+                            }
+                        }
+
                     }
                     
                 }# end foreach hosts            
