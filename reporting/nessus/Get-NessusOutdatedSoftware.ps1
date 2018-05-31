@@ -9,7 +9,7 @@ param($NessusFile,$ConsolidateCVEAfter=99999,[switch]$IncludeMSBulletins)
 
         #[xml]$NessusXML = [System.IO.File]::ReadAllLines((Resolve-Path $NessusFile).Path)
 
-        $NessusSoft = $NessusXML.NessusClientData_v2.Report.ReportHost.ReportItem | ?{ $_.'plugin_output' -like '*installed version*' -and [int]$_.severity -gt 0 }
+        $NessusSoft = $NessusXML.NessusClientData_v2.Report.ReportHost.ReportItem | ?{ ($_.'plugin_output' -like '*Reported version*' -or $_.'plugin_output' -like '*installed version*') -and [int]$_.severity -gt 0 }
         if(-not $IncludeMSBulletins)
         {
         	$NessusSoft = $NessusSoft | ?{ $_.pluginName -notmatch '^MS\d{2}-\d{3}(\s:|:)' }
@@ -86,7 +86,8 @@ param($NessusFile,$ConsolidateCVEAfter=99999,[switch]$IncludeMSBulletins)
             $Interim = foreach($Finding in $NessusSoft)
             {
                 # regex split on install version and then only ouput if the line starts with a digit (version number)
-                $Software = $Finding.'plugin_output' -split "Remote\sversion.*?:\s(.*?)`n|installed\sversion.*?:\s(.*?)`n|installed\sversion.*?:\s(.*?)`n`n" | Where-Object { $_ -match "^\d" }
+                $Software = $Finding.'plugin_output' -split "Remote\sversion.*?:\s(.*?)`n|installed\sversion.*?:\s(.*?)`n|installed\sversion.*?:\s(.*?)`n`n|Reported\sversion.*?:\s(.*?)`n" | Where-Object { $_ -match "^\d" }
+                
                 foreach($SofItem in $Software)
                 {
 
