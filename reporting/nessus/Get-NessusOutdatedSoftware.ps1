@@ -66,6 +66,8 @@ param($NessusFile,$ConsolidateCVEAfter=99999,[switch]$IncludeMSBulletins)
             @{Match='*.NET Framework*';Name='Microsoft .NET Framework'}
             @{Match='McAfee ePolicy Orchestrator Agent*';Name='McAfee ePolicy Orchestrator Agent'}
             @{Match='IBM Domino*';Name='IBM Domino'}
+            @{Match='IBM BigFix Platform*';Name='IBM BigFix Platform'}
+            @{Match='IBM WebSphere Application Server*';Name='IBM WebSphere Application Server'}
             @{Match='OpenSSL*';Name='OpenSSL'}          
         )
 
