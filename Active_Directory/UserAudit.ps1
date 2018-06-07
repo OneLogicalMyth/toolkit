@@ -47,7 +47,7 @@ $Users | foreach {
     Write-Progress -Activity "Processing user $($_.samaccountname)"  -Id 2 -PercentComplete $($OnePercent * $Step)
     $Step++
 
-    if(($_.LastLogonDate -eq $null -or $TodaysDate.adddays(-$DaysActive) -gt $_.LastLogonDate) -and $_.Enabled -eq $true -and ( $_.AccountExpirationDate -eq $null -or $_.AccountExpirationDate -gt $TodaysDate )){
+    if(($_.LastLogonDate -eq $null -or $TodaysDate.adddays(-$DaysActive) -gt $_.LastLogonDate) -and $_.Enabled -eq $true -and ( $_.AccountExpirationDate -eq $null -or $_.AccountExpirationDate -lt $TodaysDate )){
         $_ | Add-Member -MemberType NoteProperty -Name AccountActive -Value $false
     }else{
         $_ | Add-Member -MemberType NoteProperty -Name AccountActive -Value $true
