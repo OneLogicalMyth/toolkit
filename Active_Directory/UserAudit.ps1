@@ -47,10 +47,15 @@ $Users | foreach {
     Write-Progress -Activity "Processing user $($_.samaccountname)"  -Id 2 -PercentComplete $($OnePercent * $Step)
     $Step++
 
-    if(($_.LastLogonDate -eq $null -or $TodaysDate.adddays(-$DaysActive) -gt $_.LastLogonDate) -and $_.Enabled -eq $true -and ( $_.AccountExpirationDate -eq $null -or $_.AccountExpirationDate -lt $TodaysDate )){
+    if(($_.LastLogonDate -eq $null -or $TodaysDate.adddays(-$DaysActive) -gt $_.LastLogonDate) -and ( $_.AccountExpirationDate -eq $null -or $_.AccountExpirationDate -gt $TodaysDate )){
         $_ | Add-Member -MemberType NoteProperty -Name AccountActive -Value $false
     }else{
-        $_ | Add-Member -MemberType NoteProperty -Name AccountActive -Value $true
+        if($_.Enabled)
+        {
+            $_ | Add-Member -MemberType NoteProperty -Name AccountActive -Value $true
+        }else{
+            $_ | Add-Member -MemberType NoteProperty -Name AccountActive -Value $false
+        }
     }
 }
 Write-Progress -Activity "finished"  -Id 2 -Completed
@@ -117,17 +122,17 @@ Out of the $('{0:N0}' -f $EnabledUserCount) enabled user accounts there were $('
 $Output += @{
                 Title = 'Inadequate UserAccountControl Configuration'
                 Detail = $FindingDetail
-                Results = $PasswordIssues
+                Results = $($PasswordIssues | Select-Object SamAccountName, PasswordNotRequired, PasswordNeverExpires, CannotChangePassword, AllowReversiblePasswordEncryption, AccountActive)
                 SummaryTable = $SummaryTable
             }
 
 Write-Progress -Activity 'Auditing user objects' -Status 'Building the results hash table for inactive or unused accounts' -Id 1 -PercentComplete 98
 
-$FindingDetail = "Out of the $('{0:N0}' -f $EnabledUserCount) enabled user accounts there were $('{0:N0}' -f ($Users | ?{ $_.AccountActive -eq $false}).count) inactive or unused user accounts."
+$FindingDetail = "Out of the $('{0:N0}' -f $EnabledUserCount) enabled user accounts there were $('{0:N0}' -f ($Users | ?{ $_.AccountActive -eq $false -and $_.Enabled -eq $true}).count) inactive or unused user accounts."
 $Output += @{
                 Title = 'Inactive or Unused User Accounts'
                 Detail = $FindingDetail
-                Results = $($Users | ?{ $_.AccountActive -eq $false})
+                Results = $($Users | ?{ $_.AccountActive -eq $false -and $_.Enabled -eq $true} | Select-Object SamAccountName, LastLogonDate, AccountExpirationDate, PasswordLastSet)
                 SummaryTable = $null
             }
 
