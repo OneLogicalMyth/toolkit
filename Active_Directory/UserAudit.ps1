@@ -34,7 +34,7 @@ if($UserCLIXML)
     $Users = Import-Clixml $UserCLIXML
 }else{
     Import-Module ActiveDirectory
-    $Users = Get-ADUsers -Filter * -Properties $Properties
+    $Users = Get-ADUser -Filter * -Properties $Properties
     $Users | Export-Clixml ADUsers_Data.xml -Depth 2
     $TodaysDate = Get-Date
 }
