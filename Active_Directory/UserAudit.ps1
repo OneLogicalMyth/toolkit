@@ -31,13 +31,15 @@ Write-Progress -Activity 'Auditing user objects' -Status 'Obtaining a list of us
 if($UserCLIXML)
 {
     $TodaysDate = (Get-Item $UserCLIXML).LastWriteTime
-    $Users = Import-Clixml $UserCLIXML
 }else{
     Import-Module ActiveDirectory
-    $Users = Get-ADUser -Filter * -Properties $Properties
-    $Users | Export-Clixml ADUsers_Data.xml -Depth 2
+    Get-ADUser -Filter * -Properties $Properties| Export-Clixml ADUsers_Data.xml -Depth 2
     $TodaysDate = Get-Date
+    $UserCLIXML = 'ADUsers_Data.xml'
 }
+
+# import cli
+$Users = Import-Clixml $UserCLIXML
 
 # add AccountActive property to the object
 Write-Progress -Activity 'Auditing user objects' -Status 'Marking user accounts as active or inactive' -Id 1 -PercentComplete 28
@@ -108,7 +110,7 @@ if($AllowReversiblePasswordEncryption.Count -gt 0)
 {
     $AllowReversiblePasswordEncryption_InActive = "$([System.Math]::Round((100 / $AllowReversiblePasswordEncryption.Count) * ($AllowReversiblePasswordEncryption | Group-Object AccountActive | Where-Object { $_.Name -eq 'False' } | Select-Object -ExpandProperty Count)))%"
     $AllowReversiblePasswordEncryption_Active = "$([System.Math]::Round((100 / $AllowReversiblePasswordEncryption.Count) * ($AllowReversiblePasswordEncryption | Group-Object AccountActive | Where-Object { $_.Name -eq 'True' } | Select-Object -ExpandProperty Count)))%"
-    $AllowReversiblePasswordEncryption += @{Configuration='Allow Reversible Password Encryption';'Total User Count'=$('{0:N0}' -f $AllowReversiblePasswordEncryption.count);'Active Accounts'=$AllowReversiblePasswordEncryption_Active;'Inactive Users'=$AllowReversiblePasswordEncryption_Active}
+    $SummaryTable += @{Configuration='Allow Reversible Password Encryption';'Total User Count'=$('{0:N0}' -f $AllowReversiblePasswordEncryption.count);'Active Accounts'=$AllowReversiblePasswordEncryption_Active;'Inactive Users'=$AllowReversiblePasswordEncryption_Active}
 }
 
 # build a summary table and calc percentages
