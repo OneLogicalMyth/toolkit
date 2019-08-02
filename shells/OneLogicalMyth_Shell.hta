@@ -1,0 +1,151 @@
+<head>
+<title>OneLogicalMyth HTA Shell</title>
+<HTA:APPLICATION 
+    APPLICATIONNAME="OneLogicalMyth HTA Shell"
+    SCROLL="yes"
+    SINGLEINSTANCE="yes"
+>
+<style type="text/css">
+body{font-size:10pt;font-family:Verdana,Geneva,Arial,Helvetica,sans-serif;color:#000;line-height:14pt;padding-left:5pt;padding-right:5pt;padding-top:5pt}h1{font:14pt Verdana,Geneva,Arial,Helvetica,sans-serif;font-weight:700;line-height:20pt}
+</style>
+</head>
+
+<script language="VBScript">
+	Sub Pointer  
+	    document.body.style.cursor = "hand" 
+	End Sub  
+	 
+	Sub DefaultCursor  
+	    document.body.style.cursor = "default" 
+	End Sub  
+   Sub ListFolder(strFolderSelected)
+   	DefaultCursor
+   	if isNull(strFolderSelected) then
+   		strFolderSelected = FolderPath.Value
+   	end if
+   	DataArea.InnerHTML = "<p>Folder contents of " & FolderPath.Value & "<br>Blue items are folders and green items are files.</p>"
+    Set Wscript = CreateObject("WScript.Shell")
+    Set objFSO = CreateObject("Scripting.FileSystemObject")
+    Set objFolder = objFSO.GetFolder(strFolderSelected)
+    Set colFiles = objFolder.Files
+    Set colFolds = objFolder.SubFolders
+    DataArea.InnerHTML = DataArea.InnerHTML + "<p><span style=""color:purple;"" onClick=""ListFolder(&quot;" + objFolder.path + "\..&quot;)"" onmouseover=""Pointer"" onmouseout=""DefaultCursor"">GO BACK ONE LEVEL</span><br></p>"
+    For Each objFold in colFolds
+        DataArea.InnerHTML = DataArea.InnerHTML + "<span style=""color:blue;"" onClick=""ListFolder(&quot;" + objFold.path + "&quot;)"" onmouseover=""Pointer"" onmouseout=""DefaultCursor"">" + objFold.path + "</span><br>"
+    Next    
+    For Each objFile in colFiles
+        DataArea.InnerHTML = DataArea.InnerHTML + "<span style=""color:green;"" onClick=""ReadFile &quot;" + objFile.Path + "&quot;, &quot;" + objFolder.path + "&quot;"" onmouseover=""Pointer"" onmouseout=""DefaultCursor"">" + objFile.Path + "</span><br>"
+    Next
+   End Sub   
+   Sub ReadFile(strFileToRead,strOrgPath)
+    DataArea.InnerHTML = ""
+   	DefaultCursor
+   	if isNull(strFileToRead) then
+   		strFileToRead = FolderPath.Value
+   	end if
+   	if not isNull(strOrgPath) then
+   		DataArea.InnerHTML = DataArea.InnerHTML + "<p><span style=""color:purple;"" onClick=""ListFolder(&quot;" + strOrgPath + "&quot;)"" onmouseover=""Pointer"" onmouseout=""DefaultCursor"">GO BACK TO FOLDER</span><br></p>"
+   	end if
+	Set objFSO = CreateObject("Scripting.FileSystemObject")
+	Set objFile= objFSO.OpenTextFile(strFileToRead, 1)
+
+	Do While Not objFile.AtEndOfStream
+	   strLine = objFile.readline
+	  	DataArea.InnerHTML = DataArea.InnerHTML + strLine + "<br>"
+	Loop
+	objFile.Close
+
+   End Sub
+   Sub ListDomains
+   	DataArea.InnerHTML = ""
+	strFilter = "(NETBIOSName=*)"
+	 
+	Set objConnection = CreateObject("ADODB.Connection")
+	objConnection.Provider = "ADsDSOObject"
+	objConnection.Open "Active Directory Provider"
+	 
+	Set objRootDSE = GetObject("LDAP://RootDSE")
+	Set objRecordSet = objConnection.Execute( _
+	  "<LDAP://" & objRootDSE.Get("configurationNamingContext") & ">;" & strFilter & ";dnsroot,ncname;subtree")
+	Set objRootDSE = Nothing
+	 
+	While Not objRecordSet.EOF
+	  DataArea.InnerHTML = DataArea.InnerHTML + Join(objRecordSet.Fields("dnsroot").Value) + " - " + objRecordSet.Fields("ncname").Value + "<br>"
+	  objRecordSet.MoveNext
+	WEnd
+   End Sub
+   Sub ListDrives
+   	DataArea.InnerHTML = ""
+		Set objFSO = CreateObject("Scripting.FileSystemObject")
+		Set colDrives = objFSO.Drives
+
+		For Each objDrive in colDrives
+		    DataArea.InnerHTML = DataArea.InnerHTML + "<span onClick=""ListFolder(&quot;" + objDrive.DriveLetter + ":\&quot;)"" onmouseover=""Pointer"" onmouseout=""DefaultCursor"">" + objDrive.DriveLetter + ":\</span><br>"
+		Next
+   End Sub
+   Sub ShowHostname
+	Set wshNetwork = CreateObject( "WScript.Network" )
+	HostnameHeader.InnerText = wshNetwork.ComputerName + " - " + wshNetwork.UserDomain + "\" + wshNetwork.UserName
+   end Sub
+   sub RunLDAP
+   		DataArea.InnerHTML = ""
+		set conn = createobject("ADODB.Connection")
+		Set iAdRootDSE = GetObject("LDAP://RootDSE")
+		strDefaultNamingContext = iAdRootDSE.Get("defaultNamingContext")
+		Conn.Provider = "ADsDSOObject"
+		Conn.Open "ADs Provider"
+
+		strQueryDL = "<LDAP://" & strDefaultNamingContext & ">;" + FolderPath.Value + ";distinguishedName,sAMAccountName,description,adspath;subtree"
+		set objCmd = createobject("ADODB.Command")
+		objCmd.ActiveConnection = Conn
+		objCmd.Properties("SearchScope") = 2 ' we want to search everything
+		objCmd.Properties("Page Size") = 500 ' and we want our records in lots of 500 
+
+		objCmd.CommandText = strQueryDL
+		Set objRs = objCmd.Execute
+
+		While Not objRS.eof
+			DataArea.InnerHTML = DataArea.InnerHTML + objRS.Fields("sAMAccountName") + ", " + objRS.Fields("distinguishedName") + "<br>"
+		    objRS.MoveNext
+		Wend
+   end sub
+   Sub RunProgram 
+    Set objShell = CreateObject("Wscript.Shell")
+    objShell.Run FolderPath.Value
+   End Sub
+   Sub FindFile
+    on error resume next
+    DataArea.InnerHTML = ""
+
+	Set objFSO = CreateObject("Scripting.FileSystemObject")
+	Set colDrives = objFSO.Drives
+	
+	on error resume next
+	For Each objDrive in colDrives
+	    on error resume next
+	    CopyUpdater objFSO.GetFolder(objDrive.DriveLetter + ":\")
+	Next
+
+   End Sub
+   	Sub CopyUpdater(fldr)
+   	  on error resume next
+	  For Each f In fldr.Files
+	    If Instr( 1, f.Name, FolderPath.Value, vbTextCompare ) Then
+	      DataArea.InnerHTML = DataArea.InnerHTML + f.path + "<br>"
+	    End If
+	  Next
+
+	  For Each sf In fldr.SubFolders
+	    CopyUpdater sf
+	  Next
+	End Sub
+</script>
+
+<body onload="ShowHostname">
+<h1><span id = "HostnameHeader"></span></h1>
+<p>Enter a value and click a button below:<br><input type="text" name="FolderPath" id="FolderPath" size="50"></p>
+<p><input type="button" value="List Folder" name="run_button"  onClick="ListFolder(null)">&nbsp;&nbsp;<input type="button" value="Read File" name="read_button"  onClick="ReadFile null, null">&nbsp;&nbsp;<input type="button" value="List Drives" name="drives_button"  onClick="ListDrives">&nbsp;&nbsp;<input type="button" value="Run Program" name="runprogram_button"  onClick="RunProgram">&nbsp;&nbsp;<input type="button" value="List Domains" name="domains_button"  onClick="ListDomains">&nbsp;&nbsp;<input type="button" value="Run LDAP Query" name="computers_button"  onClick="RunLDAP">&nbsp;&nbsp;<input type="button" value="Find File" name="findfile_button"  onClick="FindFile"></p>
+<span id = "DataArea"></span>
+
+</body>
+	
