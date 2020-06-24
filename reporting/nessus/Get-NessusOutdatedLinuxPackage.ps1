@@ -1,5 +1,5 @@
 Function Get-NessusOutdatedLinuxPackage {
-param([string[]]$NessusFile,$ConsolidateCVEAfter=1)
+param([string[]]$NessusFile,$ConsolidateCVEAfter=99999)
     
     process
     {
@@ -14,10 +14,11 @@ param([string[]]$NessusFile,$ConsolidateCVEAfter=1)
                 foreach($SofItem in $Software)
                 {
 
-                    $Out = '' | Select-Object Host, Name, CVE, Installed
+                    $Out = '' | Select-Object Host, Name, CVE, Installed, CVSS3Base
                     $Out.Host = $Finding.ParentNode.name
                     $Out.Name = $Finding.pluginName.Replace(',','').trim()
                     $Out.CVE = $Finding.cve
+                    $Out.CVSS3Base = $Finding.cvss3_base_score
                     $Out.Installed = $SofItem
                     $Out
                 }
@@ -27,9 +28,10 @@ param([string[]]$NessusFile,$ConsolidateCVEAfter=1)
 
         $Interim | Group-Object Installed | Foreach{
             $Item = $_
-            $Out = '' | Select-Object Host, 'Package Installed', 'CVE Reference'
+            $Out = '' | Select-Object Host, 'Package Installed', 'Highest CVSS3 Base Score', 'CVE Reference'
             $Out.Host = ($_.group | Select-Object -ExpandProperty Host -Unique | Sort-Object) -join ','
             $Out.'Package Installed' = $item.Name
+            $Out.'Highest CVSS3 Base Score' = $item.group | Select-Object -ExpandProperty CVSS3Base | Sort-Object -Descending | Select-Object -First 1
 
             # Limit CVEs returned to 1 at the most
             $CVEs = ($_.group | Select-Object -ExpandProperty CVE -Unique | Sort-Object)
@@ -42,7 +44,7 @@ param([string[]]$NessusFile,$ConsolidateCVEAfter=1)
             }
 
             $Out
-        }
+        } | Sort-Object 'Highest CVSS3 Base Score' -Descending
         
     }
         
