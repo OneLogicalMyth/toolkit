@@ -1,6 +1,34 @@
  
- Function Invoke-TCPPortScan {
- param([ipaddress[]]$IPaddress, [int64[]]$Port, [bool]$StdOut = $true)
+Function Invoke-TCPPortScan {
+[CmdletBinding(DefaultParameterSetName = 'IP')]
+param(
+    [Parameter(ParameterSetName = 'IP')]
+    [ipaddress[]]$IPaddress,
+
+    [Parameter(ParameterSetName = 'Hostname')]
+    [string[]]$Hostname,
+
+    [Parameter(ParameterSetName = 'IP')]
+    [Parameter(ParameterSetName = 'Hostname')]
+    [int[]]$Port,
+
+    [Parameter(ParameterSetName = 'IP')]
+    [Parameter(ParameterSetName = 'Hostname')]
+    [bool]$StdOut = $true
+)
+
+    if($PSCmdlet.ParameterSetName -eq 'Hostname')
+    {
+        try
+        {
+            $IPaddress = $Hostname | foreach{ [System.Net.Dns]::GetHostEntry($_).AddressList }
+        }
+        catch
+        {
+            Write-Warning "Failed to resolve hostname(s)"
+        }
+    }
+
 
     $addressFamily = [System.Net.Sockets.AddressFamily]::InterNetwork
     $socketType = [System.Net.Sockets.SocketType]::Stream
