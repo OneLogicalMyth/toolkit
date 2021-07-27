@@ -35,8 +35,8 @@ function DecryptVNC($hexPassword) {
         $Password = Get-ItemPropertyValue -Path HKLM:\Software\TightVNC\Server -Name Password
         $controlPassword = Get-ItemPropertyValue -Path HKLM:\Software\TightVNC\Server -Name ControlPassword
 
-        Write-Output (DecryptVNC $Password)
-        return (DecryptVNC $controlPassword)
+        Write-Output (decrypt $Password)
+        return (decrypt $controlPassword)
     }
 
     return (decrypt (GetBytes $hexPassword))
