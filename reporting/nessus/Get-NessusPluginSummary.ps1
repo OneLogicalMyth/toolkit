@@ -1,3 +1,4 @@
+
 Function Get-NessusPluginSummary {
 param($NessusFile=$null,[string]$PluginName=$null,[int]$PluginID=$null,[int]$MinimumSeverity=1)
 
@@ -26,8 +27,9 @@ param($NessusFile=$null,[string]$PluginName=$null,[int]$PluginID=$null,[int]$Min
     Foreach($Item in $ReportItems)
     {
 
-        $Out = '' | Select-Object Host, PluginID, PluginName, Protocol, Port, ServiceName, Risk, CVSSBaseScore2, CVSSVector2, CVSSBaseScore3, CVSSVector3, CVSSCVESource, Synopsis, Solution
+        $Out = '' | Select-Object Host, IPAddress, PluginID, PluginName, Protocol, Port, ServiceName, Risk, CVSSBaseScore2, CVSSVector2, CVSSBaseScore3, CVSSVector3, CVSSCVESource, Synopsis, Solution
         $Out.Host = $Item.ParentNode.name
+        $Out.IPAddress = $Item.ParentNode.HostProperties.SelectNodes("tag[@name='host-ip']").'#text'
         $Out.PluginID = $Item.pluginID
         $Out.PluginName = $Item.pluginName
         $Out.Protocol = $Item.protocol
